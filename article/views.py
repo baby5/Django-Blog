@@ -2,18 +2,16 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from article.models import Article
 from datetime import datetime
+from django.http import Http404
 
 def home(request):
-    #return HttpResponse('Hello World, Django')
     post_list = Article.objects.all()
     return render(request, 'home.html', {'post_list': post_list})
 
-def detail(request, my_args):
-    #return HttpResponse("You're looking at my_args %s." % my_args)
-    post = Article.objects.all()[int(my_args)]
-    string = ('title = %s, category = %s, date_time = %s, content = %s' 
-        % (post.title, post.category, post.date_time, post.content)
-    )
-    return HttpResponse(string)
-
+def detail(request, id):
+    try:
+        post = Article.objects.get(pk=id)
+    except Article.DoesNotExist:
+        raise Http404
+    return render(request, 'post.html', {'post': post})
 
