@@ -1,5 +1,5 @@
 #coding:utf-8
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from article.models import Article
 from datetime import datetime
@@ -24,7 +24,10 @@ def archives(request):
         post_list = Article.objects.all()
     except Article.DoesNotExist:
         raise Http404
-    return render(request, 'archives.html', {'post_list': post_list})
+    return render(request, 'archives.html', {
+        'post_list': post_list,
+        'error': False
+    })
 
 
 def about_me(request):
@@ -37,3 +40,16 @@ def search_tag(request, tag):
     except Article.DoesNotExist:
         raise Http404
     return render(request, 'tag.html', {'post_list': post_list}) 
+
+
+def blog_search(request):
+    if 's' in request.GET:
+        s = request.GET['s']
+        if s:
+            post_list = Article.objects.filter(title__icontains=s)
+            return render(request, 'archives.html', {
+                'post_list': post_list,
+                'error': False if post_list else True,
+            })
+    return redirect('/')
+            
