@@ -4,11 +4,41 @@ from django.http import HttpResponse
 from article.models import Article
 from datetime import datetime
 from django.http import Http404
-
+from django.contrib.syndication.views import Feed
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger  #添加包
 
 def home(request):
-    post_list = Article.objects.all()
-    return render(request, 'home.html', {'post_list': post_list})
+    posts = Article.objects.all()
+    paginator = Paginator(posts, 2)
+    page = request.GET.get('page')
+    try :
+        post_list = paginator.page(page)
+    except PageNotAnInteger :
+        post_list = paginator.page(1)
+    except EmptyPage :
+        post_list = paginator.page(paginator.num_pages)
+    return render(request, 'home.html', {'post_list' : post_list})
+
+
+class RSSFeed(Feed) :
+    title = "RSS feed - article"
+    link = "/feeds/posts/"
+    description = "RSS feed - blog posts"
+
+    def items(self):
+        return Article.objects.order_by('-date_time')
+
+    def item_title(self, item):
+        return item.title
+
+    def item_pubdate(self, item):
+        return item.date_time
+
+    def item_description(self, item):
+        return item.content
+
+    def item_link(self, item):
+        return item.get_absolute_url()
 
 
 def detail(request, id):

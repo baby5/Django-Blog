@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^aboutme/$', views.about_me, name='about_me'),
     url(r'^tag_(?P<tag>\w+)/$', views.search_tag, name='search_tag'),
     url(r'^search/$', views.blog_search, name='blog_search'),
+    url(r'^feed/$', views.RSSFeed(), name = "RSS"),
 ]
