@@ -1,29 +1,29 @@
 #coding:utf-8
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from article.models import Article
-from datetime import datetime
+from django.shortcuts import get_object_or_404, get_list_or_404, render, redirect
 from django.http import Http404
 from django.contrib.syndication.views import Feed
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger  #添加包
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .models import Article
+from datetime import datetime
+
 
 def home(request):
-    posts = Article.objects.all()
-    paginator = Paginator(posts, 2)
+    articles = Article.objects.all()
+    paginator = Paginator(articles, 2)
     page = request.GET.get('page')
-    try :
-        post_list = paginator.page(page)
-    except PageNotAnInteger :
-        post_list = paginator.page(1)
-    except EmptyPage :
-        post_list = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {'post_list' : post_list})
+    try:
+        article_list = paginator.page(page)
+    except PageNotAnInteger:
+        article_list = paginator.page(1)
+    except EmptyPage:
+        article_list = paginator.page(paginator.num_pages)
+    return render(request, 'list.html', {'article_list' : article_list})
 
 
 class RSSFeed(Feed) :
     title = "RSS feed - article"
-    link = "/feeds/posts/"
-    description = "RSS feed - blog posts"
+    link = "/feeds/articles/"
+    description = "RSS feed - blog articles"
 
     def items(self):
         return Article.objects.order_by('-date_time')
@@ -42,21 +42,14 @@ class RSSFeed(Feed) :
 
 
 def detail(request, id):
-    try:
-        post = Article.objects.get(pk=id)
-    except Article.DoesNotExist:
-        raise Http404
-    return render(request, 'post.html', {'post': post})
+    article = get_object_or_404(Article, pk=id)
+    return render(request, 'detail.html', {'article': article})
 
 
 def archives(request):
-    try:
-        post_list = Article.objects.all()
-    except Article.DoesNotExist:
-        raise Http404
-    return render(request, 'archives.html', {
-        'post_list': post_list,
-        'error': False
+    article_list = Article.objects.all()
+    return render(request, 'list.html', {
+        'article_list': article_list,
     })
 
 
@@ -65,21 +58,18 @@ def about_me(request):
 
 
 def search_tag(request, tag):
-    try:
-        post_list = Article.objects.filter(category__iexact=tag)#忽略大小写, __contains:包含
-    except Article.DoesNotExist:
-        raise Http404
-    return render(request, 'tag.html', {'post_list': post_list}) 
+    article_list = get_list_or_404(Article, category__iexact=tag)#忽略大小写, __contains:包含
+    return render(request, 'list.html', {'article_list': article_list}) 
 
 
 def blog_search(request):
     if 's' in request.GET:
         s = request.GET['s']
         if s:
-            post_list = Article.objects.filter(title__icontains=s)
-            return render(request, 'archives.html', {
-                'post_list': post_list,
-                'error': False if post_list else True,
+            article_list = Article.objects.filter(title__icontains=s)
+            return render(request, 'list.html', {
+                'article_list': article_list,
+                'error_message': '' if article_list else '没结果',
             })
     return redirect('/')
             
