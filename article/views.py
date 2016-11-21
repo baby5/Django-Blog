@@ -3,6 +3,8 @@ from django.shortcuts import get_object_or_404, get_list_or_404, render, redirec
 from django.http import Http404
 from django.contrib.syndication.views import Feed
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views import generic
+
 from .models import Article
 from datetime import datetime
 
@@ -41,25 +43,25 @@ class RSSFeed(Feed) :
         return item.get_absolute_url()
 
 
-def detail(request, id):
-    article = get_object_or_404(Article, pk=id)
-    return render(request, 'detail.html', {'article': article})
+class DetailView(generic.DetailView):
+    model = Article
+    template_name = 'detail.html'
 
 
-def archives(request):
-    article_list = Article.objects.all()
-    return render(request, 'list.html', {
-        'article_list': article_list,
-    })
+class ArchivesView(generic.ListView):
+    model = Article
+    template_name = 'list.html'
 
 
 def about_me(request):
     return render(request, 'aboutme.html')
 
 
-def search_tag(request, tag):
-    article_list = get_list_or_404(Article, category__iexact=tag)#忽略大小写, __contains:包含
-    return render(request, 'list.html', {'article_list': article_list}) 
+class SearchTagView(generic.ListView):
+    template_name = 'list.html'
+
+    def get_queryset(self):
+        return Article.objects.filter(category__iexact=self.kwargs['tag'])
 
 
 def blog_search(request):
@@ -72,4 +74,4 @@ def blog_search(request):
                 'error_message': '' if article_list else '没结果',
             })
     return redirect('/')
-            
+
