@@ -19,7 +19,7 @@ def home(request):
         article_list = paginator.page(1)
     except EmptyPage:
         article_list = paginator.page(paginator.num_pages)
-    return render(request, 'list.html', {'article_list' : article_list})
+    return render(request, 'article/list.html', {'article_list' : article_list})
 
 
 class RSSFeed(Feed) :
@@ -45,20 +45,20 @@ class RSSFeed(Feed) :
 
 class DetailView(generic.DetailView):
     model = Article
-    template_name = 'detail.html'
+    template_name = 'article/detail.html'
 
 
 class ArchivesView(generic.ListView):
     model = Article
-    template_name = 'list.html'
+    template_name = 'article/list.html'
 
 
 def about_me(request):
-    return render(request, 'aboutme.html')
+    return render(request, 'article/aboutme.html')
 
 
 class SearchTagView(generic.ListView):
-    template_name = 'list.html'
+    template_name = 'article/list.html'
 
     def get_queryset(self):
         return Article.objects.filter(category__iexact=self.kwargs['tag'])
@@ -69,7 +69,7 @@ def blog_search(request):
         s = request.GET['s']
         if s:
             article_list = Article.objects.filter(title__icontains=s)
-            return render(request, 'list.html', {
+            return render(request, 'article/list.html', {
                 'article_list': article_list,
                 'error_message': '' if article_list else '没结果',
             })
