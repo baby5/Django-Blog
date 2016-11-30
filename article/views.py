@@ -74,4 +74,3 @@ def blog_search(request):
                 'error_message': '' if article_list else '没结果',
             })
     return redirect('/')
-
