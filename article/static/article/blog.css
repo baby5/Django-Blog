@@ -38,6 +38,10 @@ h3 {
     color: #fff;
 }
 
+.r-sidebar {
+    background: rgb(61, 79, 93);
+    color: #fff;
+}
 .brand-title,
 .brand-tagline {
     margin: 0;
@@ -171,5 +175,12 @@ h3 {
         position: fixed;
         top: 0;
         bottom: 0;
+    }
+
+    .r-sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
     }
 }

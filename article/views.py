@@ -26,6 +26,7 @@ def home(request):
         'tag_list': tag_list,
     })
 
+
 class RSSFeed(Feed) :
     title = "RSS feed - article"
     link = "/feeds/articles/"
@@ -50,14 +51,10 @@ class RSSFeed(Feed) :
 class DetailView(generic.DetailView):
     model = Article
     template_name = 'article/detail.html'
-
+    
     def get_context_data(self, **kwargs):
         kwargs['tag_list'] = Tags.objects.all()
-    
-    #context_object_name
-    #pk_url_kwarg
-    
-    #get_object()
+        return super(DetailView, self).get_context_data(**kwargs)
 
 
 class ArchivesView(generic.ListView):
@@ -66,6 +63,7 @@ class ArchivesView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         kwargs['tag_list'] = Tags.objects.all()
+        return super(ArchivesView, self).get_context_data(**kwargs)
 
 
 class CategoryView(generic.ListView):
@@ -76,6 +74,7 @@ class CategoryView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         kwargs['tag_list'] = Tags.objects.all()
+        return super(CategoryView, self).get_context_data(**kwargs)
 
 
 class TagView(generic.ListView):
@@ -86,6 +85,8 @@ class TagView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         kwargs['tag_list'] = Tags.objects.all()
+        return super(TagView, self).get_context_data(**kwargs)
+
 
 def blog_search(request):
     if 's' in request.GET:
