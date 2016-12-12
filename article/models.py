@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 
+from collections import defaultdict
+
 class ArticleManager(models.Manager):
     """
     return [(2016, [12, 09]), (2015, [11, 10])]
@@ -9,8 +11,8 @@ class ArticleManager(models.Manager):
         date_list = Article.objects.datetimes('created_time', 'month', order='DESC')
         date_dict = defaultdict(list)
         for d in date_list:
-            date_dict(d.year).append(d.month)
-        return sorted(date_dict.items, reverse=True)
+            date_dict[d.year].append(d.month)
+        return sorted(date_dict.items(), reverse=True)
 
 
 class Article(models.Model):

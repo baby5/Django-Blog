@@ -21,9 +21,78 @@ def home(request):
         article_list = paginator.page(paginator.num_pages)
     
     tag_list = Tags.objects.all()
+    date_archives = Article.objects.archive()#custom
     return render(request, 'article/list.html', {
         'article_list' : article_list,
         'tag_list': tag_list,
+        'date_archives': date_archives,
+    })
+
+
+class DetailView(generic.DetailView):
+    model = Article
+    template_name = 'article/detail.html'
+    
+    def get_context_data(self, **kwargs):
+        kwargs['tag_list'] = Tags.objects.all()
+        kwargs['date_archives'] = Article.objects.archive()
+        return super(DetailView, self).get_context_data(**kwargs)
+
+
+class BaseListView(generic.ListView):
+    
+    def get_context_data(self, **kwargs):
+        kwargs['tag_list'] = Tags.objects.all()
+        kwargs['date_archives'] = Article.objects.archive()
+        return super(BaseListView, self).get_context_data(**kwargs)
+    
+
+class ArchivesView(BaseListView):
+    template_name = 'article/list.html'
+
+    def get_queryset(self):
+        if 'year' in self.kwargs and 'month' in self.kwargs:
+            return Article.objects.filter(created_time__year=self.kwargs['year'], created_time__month=self.kwargs['month'])
+        else:
+            return Article.objects.all()
+
+
+class CategoryView(BaseListView):
+    template_name = 'article/list.html'
+
+    def get_queryset(self):
+        return Article.objects.filter(category=self.kwargs['cate_id'])
+
+
+class TagView(BaseListView):
+    template_name = 'article/list.html'
+
+    def get_queryset(self):
+        return Article.objects.filter(tags=self.kwargs['tag_id'])
+
+
+def blog_search(request):
+    if 's' in request.GET:
+        s = request.GET['s']
+        if s:
+            article_list = Article.objects.filter(title__icontains=s)
+            tag_list = Tags.objects.all()
+            date_archives = Article.objects.archive()#custom
+            return render(request, 'article/list.html', {
+                'article_list': article_list,
+                'tag_list' : tag_list,
+                'date_archives': date_archives,
+                'error_message': '' if article_list else 'No Results',
+            })
+    return redirect('/')
+
+
+def about_me(request):
+    tag_list = Tags.objects.all()
+    date_archives = Article.objects.archive()#custom
+    return render(request, 'article/aboutme.html', {
+        'tag_list' : tag_list,
+        'date_archives': date_archives,
     })
 
 
@@ -46,61 +115,3 @@ class RSSFeed(Feed) :
 
     def item_link(self, item):
         return item.get_absolute_url()
-
-
-class DetailView(generic.DetailView):
-    model = Article
-    template_name = 'article/detail.html'
-    
-    def get_context_data(self, **kwargs):
-        kwargs['tag_list'] = Tags.objects.all()
-        return super(DetailView, self).get_context_data(**kwargs)
-
-
-class ArchivesView(generic.ListView):
-    model = Article
-    template_name = 'article/list.html'
-
-    def get_context_data(self, **kwargs):
-        kwargs['tag_list'] = Tags.objects.all()
-        return super(ArchivesView, self).get_context_data(**kwargs)
-
-
-class CategoryView(generic.ListView):
-    template_name = 'article/list.html'
-
-    def get_queryset(self):
-        return Article.objects.filter(category=self.kwargs['cate_id'])
-
-    def get_context_data(self, **kwargs):
-        kwargs['tag_list'] = Tags.objects.all()
-        return super(CategoryView, self).get_context_data(**kwargs)
-
-
-class TagView(generic.ListView):
-    template_name = 'article/list.html'
-
-    def get_queryset(self):
-        return Article.objects.filter(tags=self.kwargs['tag_id'])
-
-    def get_context_data(self, **kwargs):
-        kwargs['tag_list'] = Tags.objects.all()
-        return super(TagView, self).get_context_data(**kwargs)
-
-
-def blog_search(request):
-    if 's' in request.GET:
-        s = request.GET['s']
-        if s:
-            article_list = Article.objects.filter(title__icontains=s)
-            tag_list = Tags.objects.all()
-            return render(request, 'article/list.html', {
-                'article_list': article_list,
-                'tag_list' : tag_list,
-                'error_message': '' if article_list else '没结果',
-            })
-    return redirect('/')
-
-
-def about_me(request):
-    return render(request, 'article/aboutme.html')

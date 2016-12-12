@@ -7,8 +7,8 @@
 <meta name="description" content="A layout example that shows off a blog page with a list of posts.">
 
     <title>abc.zxy Blog</title>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
     <link rel="stylesheet" href="{% static 'article/blog.css' %}">
     <link rel="stylesheet" href="{% static 'article/github.css' %}">
 </head>
@@ -20,16 +20,11 @@
             <h2 class="brand-tagline">霍恩海姆 - Hohenheim</h2>
             <nav class="nav">
                 <ul class="nav-list">
-                    <li>
-                        <form class="pure-form" action="/search/" method="get">
-                            <input class="pure-input-3-3" type="text" name="s" placeholder="search">
-                        </form>
-                    </li>
                     <li class="nav-item">
                         <a class="pure-success pure-button" href="/">主页</a>
                     </li>
                     <li class="nav-item">
-                        <a class="pure-success pure-button" href="{% url "blog:archives" %}">归档</a>
+                        <a class="pure-success pure-button" href="{% url "blog:archives_all" %}">归档</a>
                     </li>
                     <li class="nav-item">
                         <a class="pure-button" href="https://github.com/baby5" target="_blank">Github</a>
@@ -47,13 +42,6 @@
                         <a class="button-success pure-button" href="{% url "blog:RSS" %}">RSS</a>  
                     </li>
                 </ul>
-            </nav>
-            <nav class="nav">
-                <ul class="nav-list">
-                {% for tag in tag_list %}
-                    <a class="pure-button" href="{% url "blog:tag" tag.pk %}">{{ tag.name }}</a>
-                {% endfor %}
-                <ul>
             </nav>
         </div>
     </div>
@@ -62,59 +50,43 @@
         <div>
             {% block content %}
             {% endblock %}
-            <!--
-            <div class="footer">
-                <div class="pure-menu pure-menu-horizontal pure-menu-open">
-                    <ul>
-                        <li><a href="http://github.com/yahoo/pure/">GitHub</a></li>
-                    </ul>
-                </div>
+        </div>
+        <div class="footer">
+            <div class="pure-menu pure-menu-horizontal">
+                <ul>
+                    <li class="pure-menu-item"><a href="http://github.com/yahoo/pure/">GitHub</a></li>
+                </ul>
             </div>
-            -->
         </div>
     </div>
 
     <div class="r-sidebar pure-u-1 pure-u-md-1-4">
-        <div class="header">
-            <h1 class="brand-title">abc.zxy Blog</h1>
-            <h2 class="brand-tagline">霍恩海姆 - Hohenheim</h2>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li>
-                        <form class="pure-form" action="/search/" method="get">
-                            <input class="pure-input-3-3" type="text" name="s" placeholder="search">
-                        </form>
-                    </li>
-                    <li class="nav-item">
-                        <a class="pure-success pure-button" href="/">主页</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="pure-success pure-button" href="{% url "blog:archives" %}">归档</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="pure-button" href="https://github.com/baby5" target="_blank">Github</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="button-error pure-button" href="http://weibo.com/u/1950313565" target="_blank">Weibo</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="button-success pure-button" href="/">专题</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="button-success pure-button" href="{% url "blog:about_me" %}">About Me</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="button-success pure-button" href="{% url "blog:RSS" %}">RSS</a>  
-                    </li>
-                </ul>
-            </nav>
-            <nav class="nav">
-                <ul class="nav-list">
-                {% for tag in tag_list %}
-                    <a class="pure-button" href="{% url "blog:tag" tag.pk %}">{{ tag.name }}</a>
-                {% endfor %}
-                <ul>
-            </nav>
+        <h3>Search:</h3>
+        <form class="pure-form" action="/search/" method="get">
+            <input class="pure-input-rounded" type="text" name="s" placeholder="search">
+        </form>
+        <h3>Targets:</h3>
+        <nav class="nav">
+            <ul class="nav-list">
+            {% for tag in tag_list %}
+                <a class="pure-button" href="{% url "blog:tag" tag.pk %}">{{ tag.name }}</a>
+            {% endfor %}
+            <ul>
+        </nav>
+        <h3>Archives:</h3>
+        <div class="pure-menu pure-menu-horizontal">
+            <ul class="pure-menu-list">
+            {% for year, month_list in date_archives %}
+                <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                    <a class="pure-menu-link">{{ year }}</a>
+                    <ul class="pure-menu-children">
+                    {% for month in month_list %}
+                        <li class="pure-menu-item"><a class="pure-menu-link" href="{% url "blog:archives_time" year month %}">{{ month }}</a></li>
+                    {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+            </ul>
         </div>
     </div>
 </div>
