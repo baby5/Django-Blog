@@ -10,16 +10,7 @@ from datetime import datetime
 
 
 def home(request):
-    articles = Article.objects.filter(status='p')
-    paginator = Paginator(articles, 2)
-    page = request.GET.get('page')
-    try:
-        article_list = paginator.page(page)
-    except PageNotAnInteger:
-        article_list = paginator.page(1)
-    except EmptyPage:
-        article_list = paginator.page(paginator.num_pages)
-    
+    article_list = Article.objects.all()
     tag_list = Tags.objects.all()
     date_archives = Article.objects.archive()#custom
     return render(request, 'article/list.html', {

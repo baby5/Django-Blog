@@ -4,6 +4,8 @@
 {% block content %}
 <div class="posts">
     {% if error_message %} <h2 class="post-title">{{ error_message }}</h2> {% endif %}
+    {% load paginate_tags %}
+    {% paginate article_list 4 %}
     {% for article in article_list %}
         <section class="post">
             <header class="post-header">
@@ -22,16 +24,6 @@
             </div>
         </section>
     {% endfor %}
-
-    <div>
-        <ul class="pager">
-            {% if article_list.has_previous %}
-            <li><a href="?page={{ article_list.previous_page_number }}">上一页</a></li>
-            {% endif %}
-            {% if article_list.has_next %}
-            <li><a href="?page={{ article_list.next_page_number }}">下一页</a></li>
-            {% endif %}
-        </ul>
-    </div>
+    {% include "article/pagination.html" %}
 </div>
 {% endblock %}

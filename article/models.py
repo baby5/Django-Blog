@@ -1,7 +1,18 @@
 from django.db import models
 from django.urls import reverse
-
 from collections import defaultdict
+
+
+class ArticleComment(models.Model):
+    user_name = models.CharField(max_length=100)
+    user_email = models.EmailField(max_length=255)
+    content = models.TextField()
+    created_time = models.DateTimeField(auto_now_add=True)
+    article = models.ForeignKey("Article", on_delete=models.CASCADE)
+
+    def __unicode__(self):
+        return self.body[:20]
+
 
 class ArticleManager(models.Manager):
     """

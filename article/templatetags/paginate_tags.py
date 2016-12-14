@@ -1,16 +1,16 @@
 from django import template
-from django.cor.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 register = template.Library()
 
 @register.simple_tag(takes_context=True)
 def paginate(context, object_list, page_count):
     paginator = Paginator(object_list, page_count)
-    page = context['request'].GET.get('page')
+    page = int(context['request'].GET.get('page', 1))
 
     try:
         object_list = paginator.page(page)
-        context['current_page'] = int(page)
+        context['current_page'] = page
         pages = get_page_range(page, paginator.num_pages)
     except PageNotAnInteger:
         object_list = paginator.page(1)

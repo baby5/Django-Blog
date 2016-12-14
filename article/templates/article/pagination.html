@@ -1,6 +1,6 @@
 <div>
 {% if article_list.has_previous %}
-    <a href="?page={{ article_list.previous_page_number }}">prev</a>
+    <a href="?page={{ article_list.previous_page_number }}"><i class="fa fa-hand-o-left"></i>prev</a>
 {% endif %}
 
 {% if current_page == 1 %}
@@ -34,6 +34,6 @@
 {% endif %}
 
 {% if article_list.has_next %}
-    <a href="?page={{ article_list.next_page_number }}">next</a>
+    <a href="?page={{ article_list.next_page_number }}"><i class="fa fa-hand-o-right"></i>next</a>
 {% endif %}
 </div>
