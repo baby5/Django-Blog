@@ -4,7 +4,7 @@ from .models import Article, ArticleComment
 
 class ArticleCommentForm(forms.ModelForm):
     class Meta:
-        models = ArticleComment
+        model = ArticleComment
         fields = ['user_name', 'user_email', 'content']
         widgets = {
             'user_name': forms.TextInput(attrs={
@@ -13,7 +13,7 @@ class ArticleCommentForm(forms.ModelForm):
             'user_email': forms.EmailInput(attrs={
                 'placeholder': 'Email'
             }),
-            'content': forms.TextInput(attrs={
+            'content': forms.Textarea(attrs={
                 'placeholder': 'do a little work~'
             }),
         }
