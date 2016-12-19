@@ -18,15 +18,17 @@
 </div>
 <div>
     <div>
-        <p>Comments</p>
-        <form class="pure-form" method="post" action="{% url 'blog:comment' article.pk %}">
+        <form class="pure-form pure-form-stacked" method="post" action="{% url 'blog:comment' article.pk %}">
         {% csrf_token %}
-            <fieldset class="pure-group">
-            {% for field in form %}
-                {{ field }}
-                {{ field.errors }}
-            {% endfor %}
-                <button class="pure-button pure-button-primary" type="submit" style="float:right">submit</button>
+            <fieldset>
+                <legend>Comments</legend>
+                {% for field in form %}
+                    {{ field }}
+                    {{ field.errors }}
+                {% endfor %}
+                <div>
+                    <button class="pure-button pure-button-primary" type="submit" style="float:right">submit</button>
+                </div>
             </fieldset>
         </form>
         {% for comment in comment_list %}

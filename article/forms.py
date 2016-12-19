@@ -11,9 +11,10 @@ class ArticleCommentForm(forms.ModelForm):
                 'placeholder': 'Username',
             }),
             'user_email': forms.EmailInput(attrs={
-                'placeholder': 'Email'
+                'placeholder': 'Email',
             }),
             'content': forms.Textarea(attrs={
-                'placeholder': 'do a little work~'
+                'placeholder': 'do a little work~',
+                'style': 'width:100%',
             }),
         }

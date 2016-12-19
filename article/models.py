@@ -54,7 +54,7 @@ class Article(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['-last_modified_time']
+        ordering = ['-topped', '-last_modified_time']
 
 
 class Category(models.Model):

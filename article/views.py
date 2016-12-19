@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from .models import Article, Tags
 from .forms import ArticleCommentForm
 
+
 def home(request):
     article_list = Article.objects.all()
     tag_list = Tags.objects.all()
@@ -52,6 +53,7 @@ class BaseListView(generic.ListView):
     def get_context_data(self, **kwargs):
         kwargs['tag_list'] = Tags.objects.all()
         kwargs['date_archives'] = Article.objects.archive()
+        kwargs['error_message'] = '' if self.object_list else 'No Results'
         return super(BaseListView, self).get_context_data(**kwargs)
     
 
