@@ -76,6 +76,13 @@
         <h3>Archives:</h3>
         <div class="pure-menu pure-menu-horizontal">
             <ul class="pure-menu-list">
+            {# regroup dates by year as dates_by_year #}
+            {# for mouths in dates_by_year #}
+                {# mouths.grouper #}
+                {# for mouth in mouths.list #}
+                    {# mouth #}
+                {# endfor #}
+            {# endfor #}
             {% for year, month_list in date_archives %}
                 <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
                     <a class="pure-menu-link">{{ year }}</a>
